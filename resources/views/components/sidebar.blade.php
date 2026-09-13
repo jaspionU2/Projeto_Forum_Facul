@@ -1,45 +1,50 @@
-<aside class="w-64 bg-white border-r border-gray-200 h-screen sticky top-0 hidden lg:block">
-    <div class="p-6">
-        <!-- Logo & Brand -->
-        <div class="flex items-center gap-3 mb-8">
-            <div class="w-10 h-10 rounded-lg bg-[#1e3a8a] flex items-center justify-center">
-                <span class="text-white font-semibold text-lg">CN</span>
-            </div>
-            <span class="font-semibold text-gray-900 text-lg">{{ config('app.name', 'CoopNet') }}</span>
-        </div>
-
-        <!-- Navigation -->
-        <nav class="space-y-1" aria-label="Main navigation">
-            @foreach($navigationItems as $item)
-                <button
-                    type="button"
-                    wire:click="setActiveNav('{{ $item['label'] }}')"
-                    class="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors
-                        {{ $activeNav === $item['label'] ? 'bg-[#1e3a8a] text-white' : 'text-gray-700 hover:bg-gray-50' }}"
-                    aria-current="{{ $activeNav === $item['label'] ? 'page' : 'false' }}"
-                >
-                    <span class="w-5 h-5 flex-shrink-0" wire:ignore>
-                        {!! $item['icon'] !!}
-                    </span>
-                    <span class="font-medium text-sm">{{ $item['label'] }}</span>
-                </button>
-            @endforeach
-        </nav>
-
-        <!-- Settings Link -->
-        <div class="mt-8 pt-8 border-t border-gray-200">
-            <button
-                type="button"
-                class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-                wire:navigate
-                href="{{ route('settings') }}"
-            >
-                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <circle cx="12" cy="12" r="3"></circle>
-                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+<aside class="w-64 flex-shrink-0 bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col justify-between min-h-[calc(100vh-4rem)]">
+    <div>
+        <!-- Logo / Título -->
+        <div class="px-4 py-3 mb-4">
+            <h2 class="text-xl font-bold text-[#1e3a8a] flex items-center gap-2">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H7a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/>
                 </svg>
-                <span class="font-medium text-sm">{{ __('forum.settings') }}</span>
-            </button>
+                Fórum
+            </h2>
         </div>
+
+        <!-- Links Principais de Navegação -->
+        <nav class="space-y-1">
+            <!-- Feed Principal -->
+            <a 
+                href="{{ route('posts.index') }}" 
+                wire:navigate
+                class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors {{ request()->routeIs('posts.*') ? 'bg-[#1e3a8a] text-white shadow-sm' : 'text-gray-600 hover:bg-gray-100' }}"
+            >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 00-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+                <span>Feed Principal</span>
+            </a>
+
+            <!-- Comunidades -->
+            <a 
+                href="{{ route('communities.index') }}" 
+                wire:navigate
+                class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors {{ request()->routeIs('communities.*') ? 'bg-[#1e3a8a] text-white shadow-sm' : 'text-gray-600 hover:bg-gray-100' }}"
+            >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2  
+
+    <!-- Seção Inferior: Configurações -->
+    <div class="pt-4 border-t border-gray-200">
+        <a 
+            href="{{ route('settings.index') }}" 
+            wire:navigate
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors {{ request()->routeIs('settings.*') ? 'bg-[#1e3a8a] text-white shadow-sm' : 'text-gray-600 hover:bg-gray-100' }}"
+        >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="3" stroke-width="2"></circle>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            <span>Configurações</span>
+        </a>
     </div>
 </aside>

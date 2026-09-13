@@ -1,51 +1,31 @@
 <?php
 
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\CommentController;
-use App\Http\Controllers\PostController;
-use App\Http\Controllers\LikeController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\CommunityController;
+use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\CommentController;
 
-/*
-|--------------------------------------------------------------------------
-| Rotas Públicas & Autenticação
-|--------------------------------------------------------------------------
-*/
-
-// Redireciona a raiz para a página de login
 Route::get('/', function () {
-    return redirect()->route('login');
+    return redirect()->route('posts.index');
 });
 
-// Exibe o formulário de login
-Route::get('/login', [LoginController::class, 'create'])->name('login');
-
-// Processa a tentativa de login
-Route::post('/login', [LoginController::class, 'store']);
-
-/*
-|--------------------------------------------------------------------------
-| Área Protegida (Fórum / Rede Social)
-|--------------------------------------------------------------------------
-*/
 Route::middleware(['auth'])->group(function () {
-    // Feed Principal e Gestão de Posts
+    // Feed e Posts
     Route::get('/forum', [PostController::class, 'index'])->name('posts.index');
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
     Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
+    Route::post('/posts/{post}/like', [PostController::class, 'like'])->name('posts.like');
 
-    // Toggle de Curtidas
-    Route::post('/posts/{post}/like', [LikeController::class, 'togglePostLike'])->name('posts.like');
-
-    // Comentários (Alinhado ao CommentController e Form)
+    // Comentários
     Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 
-    // Rota de Configurações (Ajuste para a Sidebar)
-    Route::get('/settings', function () {
-        return redirect()->route('posts.index');
-    })->name('settings');
+    // Comunidades
+    Route::get('/comunidades', [CommunityController::class, 'index'])->name('communities.index');
+    Route::get('/comunidades/{community}', [CommunityController::class, 'show'])->name('communities.show');
 
-    // Logout
-    Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
+    // Configurações
+    Route::get('/configuracoes', [SettingsController::class, 'index'])->name('settings.index');
+    Route::put('/configuracoes', [SettingsController::class, 'update'])->name('settings.update');
 });
