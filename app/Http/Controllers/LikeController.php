@@ -28,10 +28,6 @@ class LikeController extends Controller
         }
 
         // Retorna apenas os dados para o Vue.js atualizar a tela sem recarregar
-        return response()->json([
-            'status' => 'success',
-            'message' => $message,
-            'likes_count' => $post->likes_count
-        ]);
+        return back();
     }
 }
