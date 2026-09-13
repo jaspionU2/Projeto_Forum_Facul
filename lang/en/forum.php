@@ -7,7 +7,7 @@ return [
     'unread_notifications' => 'unread notifications',
     'user_menu' => 'User menu',
     'create_post' => 'Create post',
-    'share_thoughts' => 'Share your thoughts with the team...',
+    'share_thoughts' => 'Compartilhe suas ideias...',
     'post_content' => 'Post content',
     'emojis' => 'Emojis',
     'attach_image' => 'Attach image',
