@@ -2,33 +2,37 @@
 
 @section('content')
 <div class="min-h-screen bg-[#f5f5f7]">
-    <div class="flex">
-        <!-- Left Sidebar (Navegação Esquerda) -->
-        @include('components.sidebar', [
-            'navigationItems' => $navigationItems,
-            'activeNav' => $activeNav,
-        ])
+    <div class="flex min-h-screen">
+        <!-- Sidebar Reutilizável com as 3 Páginas -->
+        <x-sidebar />
 
-        <!-- Main Area -->
+        <!-- Área Principal -->
         <div class="flex-1 flex flex-col min-w-0">
-            <!-- Header (Topo) -->
+            <!-- Header Topo -->
             @include('components.header', [
-                'userAvatar' => $userAvatar ?? 'JD',
+                'userAvatar' => $userAvatar ?? 'U',
                 'unreadNotificationsCount' => $unreadNotificationsCount ?? 0,
             ])
 
-            <!-- Feed Area -->
+            <!-- Área de Feed -->
             <div class="flex flex-1">
-                <!-- Main Feed (Coluna Central) -->
-                <main class="flex-1 py-6 px-8" role="main">
-                    <!-- Componente: Criar Post -->
+                <!-- Coluna Central -->
+                <main class="flex-1 py-6 px-8 max-w-4xl mx-auto w-full" role="main">
+                    @if(session('success'))
+                        <div class="mb-4 p-4 bg-green-50 border border-green-200 text-green-700 text-sm rounded-xl">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    <!-- Card Criar Post -->
                     @include('components.create-post', [
-                        'userAvatar' => $userAvatar ?? 'JD',
+                        'userAvatar' => $userAvatar ?? 'U',
+                        'communities' => $communities ?? [],
                         'emojiList' => ['😊', '👍', '❤️', '🎉', '💡', '🚀', '👏', '💪'],
                     ])
 
                     <div class="mt-6">
-                        <!-- Componente: Lista de Posts -->
+                        <!-- Lista de Posts -->
                         @include('components.posts-list', [
                             'posts' => $posts,
                             'reactionEmojis' => ['👍', '❤️', '😊', '🎉', '💡'],
@@ -36,7 +40,7 @@
                     </div>
                 </main>
 
-                <!-- Right Sidebar (Barra Lateral Direita) -->
+                <!-- Sidebar Direita -->
                 @include('components.right-sidebar', [
                     'trendingTopics' => $trendingTopics ?? [],
                     'suggestedConnections' => $suggestedConnections ?? [],
