@@ -55,7 +55,7 @@ class PostController extends Controller
         ));
     }
 
-    public function store(Request $request)
+public function store(Request $request)
 {
     $validated = $request->validate([
         'title' => 'required|string|max:255',
@@ -66,7 +66,6 @@ class PostController extends Controller
 
     $imageBinary = null;
 
-    // Processamento e decodificação do Base64 da imagem
     if ($request->filled('image')) {
         $base64Image = preg_replace('/^data:image\/[a-zA-Z]+;base64,/', '', $request->input('image'));
         $decodedImage = base64_decode($base64Image, true);
@@ -77,7 +76,10 @@ class PostController extends Controller
             ])->withInput();
         }
 
-        $imageBinary = $decodedImage;
+        // CORREÇÃO AQUI: 
+        // Em vez de stream, convertemos o binário bruto para uma string Hexadecimal.
+        // O PostgreSQL entende que qualquer string começando com '\x' em uma coluna BYTEA é um binário.
+        $imageBinary = '\x' . bin2hex($decodedImage);
     }
 
     // Criação da publicação unificada
