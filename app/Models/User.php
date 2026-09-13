@@ -9,24 +9,50 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    //SQL INJECTION
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'campus_id',
+        'is_active',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    // N:1
+    public function campus()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->belongsTo(Campus::class);
+    }
+
+    // 1:N
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    // 1:N
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    // N:N
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class)
+                    ->withPivot(['campus_id', 'community_id']);
     }
 }
