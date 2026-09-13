@@ -56,22 +56,52 @@ class PostController extends Controller
     }
 
     public function store(Request $request)
+{
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'content' => 'required|string',
+        'community_id' => 'required|exists:communities,id',
+        'image' => 'nullable|string',
+    ]);
+
+    $imageBinary = null;
+
+    // Processamento e decodificação do Base64 da imagem
+    if ($request->filled('image')) {
+        $base64Image = preg_replace('/^data:image\/[a-zA-Z]+;base64,/', '', $request->input('image'));
+        $decodedImage = base64_decode($base64Image, true);
+
+        if ($decodedImage === false) {
+            return back()->withErrors([
+                'image' => 'A imagem enviada não é um base64 válido.',
+            ])->withInput();
+        }
+
+        $imageBinary = $decodedImage;
+    }
+
+    // Criação da publicação unificada
+    Post::create([
+        'title' => $validated['title'],
+        'content' => $validated['content'],
+        'community_id' => $validated['community_id'],
+        'user_id' => Auth::id(),
+        'image_binary' => $imageBinary,
+        'likes_count' => 0,
+    ]);
+
+    return redirect()->route('posts.index')->with('success', 'Publicação criada com sucesso!');
+}
+
+    public function destroy(Post $post)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'community_id' => 'required'
-        ]);
+        // Garante que apenas o autor original apague o próprio post
+        if ($post->user_id !== Auth::id()) {
+            abort(403, 'Ação não autorizada.');
+        }
 
-        // Vincula a criação do post ao ID do usuário autenticado no momento
-        Post::create([
-            'title' => $validated['title'],
-            'content' => $validated['content'],
-            'community_id' => $validated['community_id'],
-            'user_id' => Auth::id(),
-            'likes_count' => 0,
-        ]);
+        $post->delete();
 
-        return redirect()->route('posts.index')->with('success', 'Publicado com sucesso!');
+        return back()->with('success', 'Publicação excluída com sucesso!');
     }
 }

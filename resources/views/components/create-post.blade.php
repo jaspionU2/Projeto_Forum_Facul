@@ -1,6 +1,9 @@
 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6" role="region" aria-label="{{ __('forum.create_post') }}">
-    <form method="POST" action="{{ route('posts.store') }}">
+    <form method="POST" action="{{ route('posts.store') }}" id="create-post-form">
         @csrf
+
+        <!-- Campo Oculto que Guardará o Base64 -->
+        <input type="hidden" name="image" id="image-base64-input">
 
         <div class="flex items-start gap-4">
             <!-- User Avatar -->
@@ -27,6 +30,18 @@
                     class="w-full min-h-[100px] p-3 border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-[#1e3a8a] focus:border-transparent text-gray-700 placeholder-gray-400 text-sm"
                     aria-label="{{ __('forum.post_content') }}"
                 >{{ old('content') }}</textarea>
+
+                <!-- Pré-visualização da Imagem Selecionada -->
+                <div id="image-preview-container" class="hidden relative inline-block border border-gray-200 rounded-lg p-1 bg-gray-50">
+                    <img id="image-preview" src="" alt="Pré-visualização" class="max-h-40 rounded-md object-cover">
+                    <button 
+                        type="button" 
+                        onclick="removeSelectedImage()" 
+                        class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold hover:bg-red-600 shadow"
+                    >
+                        &times;
+                    </button>
+                </div>
 
                 <!-- Emoji Row -->
                 <div class="mt-3 flex items-center gap-2 pb-3 border-b border-gray-100" aria-label="{{ __('forum.emojis') }}">
@@ -55,10 +70,20 @@
                             </select>
                         </div>
 
-                        <!-- Attach Image -->
+                        <!-- Input Invisível de Arquivo -->
+                        <input 
+                            type="file" 
+                            id="post-image-file" 
+                            accept="image/*" 
+                            class="hidden" 
+                            onchange="handleImageUpload(event)"
+                        >
+
+                        <!-- Botão Anexar Imagem -->
                         <button
                             type="button"
-                            class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors"
+                            onclick="document.getElementById('post-image-file').click()"
+                            class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors cursor-pointer"
                             aria-label="{{ __('forum.attach_image') }}"
                         >
                             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -82,3 +107,32 @@
         </div>
     </form>
 </div>
+
+<!-- Script para Leitura e Conversão em Base64 -->
+<script>
+    function handleImageUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const base64String = e.target.result;
+            document.getElementById('image-base64-input').value = base64String;
+            
+            // Exibe a pré-visualização na tela
+            const previewImg = document.getElementById('image-preview');
+            const previewContainer = document.getElementById('image-preview-container');
+            previewImg.src = base64String;
+            previewContainer.classList.remove('hidden');
+        };
+
+        reader.readAsDataURL(file);
+    }
+
+    function removeSelectedImage() {
+        document.getElementById('image-base64-input').value = '';
+        document.getElementById('post-image-file').value = '';
+        document.getElementById('image-preview').src = '';
+        document.getElementById('image-preview-container').classList.add('hidden');
+    }
+</script>
