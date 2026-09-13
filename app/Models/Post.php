@@ -14,7 +14,8 @@ class Post extends Model
         'user_id',
         'community_id',
         'likes_count',
-        'comments_count'
+        'comments_count',
+        'image_binary'
     ];
 
     // N:1 
